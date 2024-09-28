@@ -1,6 +1,9 @@
 # Program output
 logins.txt
 
+#Large file
+test_files/rockyou.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
