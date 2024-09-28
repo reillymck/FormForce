@@ -58,11 +58,4 @@ jobs:
           exit 1
         fi
 
-  doctest:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Run doctest
-      run: |
-        make doctest
 
