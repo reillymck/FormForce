@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
-from form_force import brute_force_form
+from code.form_force import brute_force_form
 
 class TestBruteForceForm(unittest.TestCase):
 
