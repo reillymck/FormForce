@@ -92,13 +92,15 @@ if __name__ == "__main__":
 
     if Path(args.username).is_file():
         logging.info(f"Using usernames from file {args.username}")
-        unames = open(args.username, "r").readlines()
+        with open(args.username, "r", encoding='latin-1') as f:
+            unames = f.readlines()
     else:
         unames = [args.username]
 
     if Path(args.password).is_file():
         logging.info(f"Using passwords from file {args.password}")
-        pwords = open(args.password, "r").readlines()
+        with open(args.password, "r", encoding='latin-1') as f:
+            pwords = f.readlines()
     else:
         pwords = [args.password]
 

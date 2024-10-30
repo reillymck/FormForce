@@ -5,6 +5,8 @@ Brute force a web form.
 
 usage: form_force.py [-h] [-u USERNAME] [-p PASSWORD] [-o OUTPUT] [-v] [-uf USERNAME_FIELD] [-pf PASSWORD_FIELD] host page
 
+example: python .\code\form_force.py 10.0.0.40 /login.php -u .\test_files\usernames.txt -p .\test_files\rockyou.txt -o results.txt -v
+
 positional arguments:
   host                  URL or IP address of the host
   page                  Path to the form
@@ -92,13 +94,15 @@ if __name__ == "__main__":
 
     if Path(args.username).is_file():
         logging.info(f"Using usernames from file {args.username}")
-        unames = open(args.username, "r").readlines()
+        with open(args.username, "r", encoding='utf-8') as f:
+            unames = f.readlines()
     else:
         unames = [args.username]
 
     if Path(args.password).is_file():
         logging.info(f"Using passwords from file {args.password}")
-        pwords = open(args.password, "r").readlines()
+        with open(args.password, "r", encoding='utf-8') as f:
+            pwords = f.readlines()
     else:
         pwords = [args.password]
 
