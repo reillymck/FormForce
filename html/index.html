@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brute Force Web Form</title>
+    <style>
+        /* Center the form on the page horizontally */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        /* Outer box container styling */
+        #form-container {
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border: 1px solid black;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            width: 320px;
+            text-align: center;
+        }
+
+        /* Label styling */
+        label {
+            display: block;
+            text-align: left;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Input and button styling */
+        input[type="text"],
+        input[type="file"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid black;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        /* Button specific styling */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+    </style>
+</head>
+<body>
+    <div id="form-container">
+        <h1>Brute Force Web Form</h1>
+        <form action="form_force.py" method="post" enctype="multipart/form-data">
+
+            <!-- Target IP Address -->
+            <div id="ip-container">
+                <label for="target_ip">Target IP Address:</label>
+                <input type="text" id="target_ip" name="host" required>
+            </div>
+
+            <!-- Username File -->
+            <div id="username-container">
+                <label for="username_file">Username File:</label>
+                <input type="file" id="username_file" name="username" accept=".txt" required>
+            </div>
+
+            <!-- Password File -->
+            <div id="password-container">
+                <label for="password_file">Password File:</label>
+                <input type="file" id="password_file" name="password" accept=".txt" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div id="submit-container">
+                <button type="submit">Submit</button>
+            </div>
+
+        </form>
+    </div>
+</body>
+</html>
