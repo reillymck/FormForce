@@ -48,3 +48,10 @@ We added 2 options to the form_force function: min_delay and max_delay. This all
 
 ## Brute Force Using Time Delay
 ![Brute Force with Time Delay](screenshots/RandomTime.png)
+
+## PHASE 3
+
+We added an html page where a less tech-savvy user has a friendlier interface to input their options and have the command generated for them to copy and paste into powershell
+
+## HTML Command Generation
+![HTML Command Generation](screenshots/GenerateCommand.JPG)

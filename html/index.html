@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Generate Brute Force Command</title>
+    <style>
+        /* Styling for the form and output */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        #form-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid black;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid black;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+            button:hover {
+                background-color: #45a049;
+            }
+
+        #output-container {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            #output-container p {
+                margin: 5px 0;
+            }
+
+        /* Styling for copy button */
+        #copy-button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+            margin-top: 10px;
+        }
+
+            #copy-button:hover {
+                background-color: #0056b3;
+            }
+
+        /* Responsive Design for Small Screens */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            #form-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="form-container">
+        <h1>Generate Brute Force Command</h1>
+        <form id="brute-force-form">
+            <!-- Target IP -->
+            <label for="target_ip">Target IP Address:</label>
+            <input type="text" id="target_ip" name="host" required>
+
+            <!-- Target Page -->
+            <label for="target_page">Target Page/Path:</label>
+            <input type="text" id="target_page" name="page" placeholder="/login.php" required>
+
+            <!-- Username File Path -->
+            <label for="username_file">Username File Path:</label>
+            <input type="text" id="username_file" name="username" value="./test_files/username.txt" required>
+
+            <!-- Password File Path -->
+            <label for="password_file">Password File Path:</label>
+            <input type="text" id="password_file" name="password" value="./test_files/rockyou.txt" required>
+
+            <!-- Output File Path -->
+            <label for="output_file">Output File Path:</label>
+            <input type="text" id="output_file" name="output" value="results.txt" required>
+
+            <!-- Min/Max Delay -->
+            <label for="min_delay">Minimum Delay (Seconds):</label>
+            <input type="number" id="min_delay" name="min_delay" step="0.1" value="1" required>
+
+            <label for="max_delay">Maximum Delay (Seconds):</label>
+            <input type="number" id="max_delay" name="max_delay" step="0.1" value="5" required>
+
+            <!-- Verbose output as a "Yes/No" dropdown -->
+            <label for="verbose">Verbose Output:</label>
+            <select id="verbose" name="verbose">
+                <option value="--v">Yes</option>
+                <option value="">No</option>
+            </select>
+
+            <!-- Submit Button -->
+            <button type="button" id="submit-button">Generate Command</button>
+        </form>
+
+        <!-- Output Section -->
+        <div id="output-container">
+            <h3>Generated Command:</h3>
+            <div id="output"></div>
+            <button id="copy-button" style="display: none;">Copy Command</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('submit-button').addEventListener('click', () => {
+            const host = document.getElementById('target_ip').value;
+            const page = document.getElementById('target_page').value;
+            const usernameFile = document.getElementById('username_file').value;
+            const passwordFile = document.getElementById('password_file').value;
+            const outputFile = document.getElementById('output_file').value;
+            const minDelay = document.getElementById('min_delay').value;
+            const maxDelay = document.getElementById('max_delay').value;
+            const verbose = document.getElementById('verbose').value;
+
+            // Generate the command to run in PowerShell
+            const command = `python .\\code\\form_force.py ${host} ${page} -u ${usernameFile} -p ${passwordFile} -o ${outputFile} ${verbose} --min-delay ${minDelay} --max-delay ${maxDelay}`;
+
+            // Display the generated command for the user to copy
+            const output = document.getElementById('output');
+            output.innerHTML = `<pre>${command}</pre>`;
+
+            // Show the "Copy" button
+            const copyButton = document.getElementById('copy-button');
+            copyButton.style.display = 'inline-block';
+
+            // Add event listener for copying the command to clipboard
+            copyButton.addEventListener('click', () => {
+                const range = document.createRange();
+                range.selectNode(output);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                alert('Command copied to clipboard! Now open the Developer PowerShell window at the root directory of the project and run the command.');
+            });
+        });
+    </script>
+</body>
+</html>
