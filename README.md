@@ -51,7 +51,8 @@ We added 2 options to the form_force function: min_delay and max_delay. This all
 
 ## PHASE 3
 
-We added an html page where a less tech-savvy user has a friendlier interface to input their options and have the command generated for them to copy and paste into powershell
+We added an html page where a less tech-savvy user has a friendlier interface to input their options and have the command generated for them to copy and paste into powershell.
+We also added multiprocessing to the program so that multiple jobs can be spawned to send and analyze username/password attempts.
 
 ## HTML Command Generation
 ![HTML Command Generation](screenshots/GenerateCommand.JPG)
