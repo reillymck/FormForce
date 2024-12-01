@@ -33,6 +33,7 @@ import argparse
 import logging
 import multiprocessing as mp
 from pathlib import Path
+from queue import Queue
 import requests
 import random  # for random delay
 import time  # for sleep
@@ -48,6 +49,7 @@ def _brute_force_from_worker(
         logging.basicConfig(level=logging.ERROR)
 
     cnt = 0
+    result = []
     for uname in unames:
         uname = uname.strip()
         for pword in pwords:
@@ -68,7 +70,8 @@ def _brute_force_from_worker(
                 exit(1)
 
             if "Invalid" not in response.text:
-                out.write(f"{uname}:{pword}\n")
+                result.append(f"{uname}:{pword}\n")
+                # out.write(f"{uname}:{pword}\n")
                 logging.debug(f"Valid credentials found: {uname}:{pword}")
 
             # Add a random sleep interval between requests
@@ -78,6 +81,7 @@ def _brute_force_from_worker(
 
         cnt += 1
         logging.info(f"Attempted {cnt} usernames")
+        out.put(result)
 
 
 def brute_force_form(
@@ -109,7 +113,7 @@ def brute_force_form(
                 (unames, pwords[i : i + len(pwords) // jobs])
                 for i in range(0, len(pwords), len(pwords) // jobs)
             ]
-
+        q = mp.Queue()
         with mp.Pool(jobs) as pool:
             workers = []
             for i in creds:
@@ -120,7 +124,7 @@ def brute_force_form(
                         dest,
                         unames,
                         pwords,
-                        out,
+                        q,
                         uname_field,
                         pword_field,
                         min_delay,
@@ -131,10 +135,18 @@ def brute_force_form(
                 workers.append(res)
             for i in workers:
                 i.join()
+        while not q.empty():
+            result = q.get()
+            for i in result:
+                out.write(i)
     else:
+        q = Queue()
         _brute_force_from_worker(
-            dest, unames, pwords, out, uname_field, pword_field, min_delay, max_delay, lock, True
+            dest, unames, pwords, q, uname_field, pword_field, min_delay, max_delay, lock, True
         )
+        result = q.get()
+        for i in result:
+            out.write(i)
 
 
 if __name__ == "__main__":
@@ -197,4 +209,5 @@ if __name__ == "__main__":
             args.password_field,
             args.min_delay,
             args.max_delay,
+            args.jobs,
         )
